@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.collection.ArrayMap
 import com.example.kotlinbuttontest.ApiService
 import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,45 +25,38 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         var hi: String?
         var ho: String? = "Lee"
-        var ms : String? = null
+        var ms: String? = null
+        var ass: String?
+        var cnt: Int = 0;
 
 
         btn_kotlin.setOnClickListener {
 
             var retrofit = Retrofit.Builder()
-                .baseUrl("http://ec2-52-79-169-96.ap-northeast-2.compute.amazonaws.com:8080")
+                .baseUrl("http://ec2-13-125-39-193.ap-northeast-2.compute.amazonaws.com:8080")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
             val server = retrofit.create(ApiService::class.java)
-            hi = et_kotlin.text.toString()
-            val testcall = server.test()
-
             val random = Random()
             val num = random.nextInt(24)
 
-            testcall.enqueue(object : Callback<JsonObject> {
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+            hi = et_kotlin.text.toString()
+
+            val testcall = server.testcall("$hi")
+            cnt = cnt + 1
+
+            testcall.enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     Log.d("test", response?.body().toString())
-                    server.test().enqueue(object : Callback<JsonObject> {
 
-                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-
-                            ms = (response?.body()?.get("data")?.asJsonArray?.get(num) as JsonObject).get("name").toString()
-                            Toast.makeText(applicationContext, "$ms", Toast.LENGTH_LONG).show();
-                            Log.d("Print", response.body().toString())
-                        }
-
-                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                        }
-
-                    })
+                    ass = response.body().toString()
+                    // Toast.makeText(applicationContext, "$cnt" + "번 " + "$ms", Toast.LENGTH_LONG).show();
+                    Log.d("Print", "$ass")
                 }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.e("SSS", t.toString())
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                 }
-
             })
         }
     }

@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kotlinbuttontest.ApiService
+import com.example.kotlinbuttontest.apiService
 import com.google.gson.JsonObject
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -14,6 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.util.*
@@ -54,32 +56,13 @@ class RetrofitService : AppCompatActivity(){
         })
     }
 
-    fun callbackget(res: String): String {
+    fun callbackget(res: String): apiService {
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-13-125-39-193.ap-northeast-2.compute.amazonaws.com:8080")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .build();
-        val server = retrofit.create(ApiService::class.java)
-        val hi = res
-        val testcall = server.getTotalUser()
-
-        val random = Random()
-        val num = random.nextInt(24)
-        var ret = "콜백이 오기전"
-        testcall.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.d("test", response?.body().toString())
-
-                val ms = (response?.body()?.get("data")?.asJsonArray?.get(num) as JsonObject).get("name").toString()
-                ret = ms
-                Log.d("Print", response.body().toString())
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-        })
-        return ret
+            .baseUrl("http://10.0.2.2:8080/")
+            .build().create(apiService::class.java)
+        return retrofit;
     }
+
 }

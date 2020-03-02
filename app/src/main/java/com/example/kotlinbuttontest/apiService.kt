@@ -1,6 +1,8 @@
 package com.example.kotlinbuttontest
 
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
+import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -16,8 +18,8 @@ interface apiService {
     fun test(): Call<ResponseBody?>?
 
     @GET("/users")
-    fun getUser(@Query("name") name: String?): Call<JsonObject?>?
+    fun getUser(@Query("name") name: String?): Observable<JsonObject>
 
     @GET("/users")
-    fun getTotalUser(): Single<JsonObject>
+    fun getTotalUser(): Observable<JsonObject>
 }

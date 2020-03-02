@@ -23,13 +23,29 @@ class MainActivity : AppCompatActivity() {
             retrofitService.getTotalUser()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe({ it ->
                     Log.d("content",it.toString())
+                    Log.d("userIdx ",it.getAsJsonArray("data").get(0).asJsonObject.get("userIdx").asString)
+                    Log.d("name ",it.getAsJsonArray("data").get(0).asJsonObject.get("name").asString)
+                    Log.d("part ",it.getAsJsonArray("data").get(0).asJsonObject.get("part").asString)
+                    Log.d("profileUrl ",it.getAsJsonArray("data").get(0).asJsonObject.get("profileUrl").asString)
+                    Log.d("message", it.getAsJsonPrimitive("message").asString)
+                    Log.d("status",it.getAsJsonPrimitive("status").asString)
                     Toast.makeText(applicationContext, "$it", Toast.LENGTH_LONG).show()
+                    val t = it.getAsJsonPrimitive("message").asString
+                    val test = it.getAsJsonArray("data").get(0).asJsonObject.get("name").asString
+                    retrofitService.getUser(test)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            Log.d("content",it.toString())
+                            Toast.makeText(applicationContext,"$it",Toast.LENGTH_LONG).show()
+                        }
                 })
                 {
                     Log.e("Error",it.message)
                 }
+
 
         }
 

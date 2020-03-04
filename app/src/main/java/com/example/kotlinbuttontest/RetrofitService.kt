@@ -1,12 +1,15 @@
 package com.example.kotlinbuttontest
 
+
 import android.content.Context
 import android.media.MediaScannerConnection
-import android.util.Log
 import android.widget.Toast
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
+import com.example.kotlinbuttontest.apiService
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -31,11 +34,11 @@ class RetrofitService {
 
     fun callbackpost(res: String) {
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-13-125-39-193.ap-northeast-2.compute.amazonaws.com:8080")
+            .baseUrl("http://ec2-13-209-73-204.ap-northeast-2.compute.amazonaws.com:8080")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 //        val file = File(Context.getFiles"C:\\Users\\Jay\\Desktop\\테스트\\2.jpg")
-        val file = File("/storage/emulated/0/Download/POL_apple.jpg")
+        val file = File("/storage/emulated/0/Download/i14566164523.gif")
         var fbody = RequestBody.create(MediaType.parse("multipart/form-data"),file)
         var multibody = MultipartBody.Part.createFormData("profile",file.name,fbody)
         val server = retrofit.create(apiService::class.java)
@@ -66,9 +69,9 @@ class RetrofitService {
         var retrofit = Retrofit.Builder()
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://10.0.2.2:8080/")
+            .baseUrl("http://192.168.0.18:8080/")
             .build().create(apiService::class.java)
-        return retrofit;
+        return retrofit
     }
 
     fun callbackgetimage(context: Context) :Observable<String>{

@@ -45,15 +45,14 @@ class MainActivity : AppCompatActivity() {
             retrofitService.getTotalUser()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ it ->
+                /*.subscribe({ it ->
                     Log.d("content", it.toString())
                     Log.d("userIdx ", it.getAsJsonArray("data").get(0).asJsonObject.get("userIdx").asString)
                     Log.d("name ", it.getAsJsonArray("data").get(0).asJsonObject.get("name").asString)
                     Log.d("part ", it.getAsJsonArray("data").get(0).asJsonObject.get("part").asString)
                     Log.d("profileUrl ", it.getAsJsonArray("data").get(0).asJsonObject.get("profileUrl").asString)
                     Log.d("message", it.getAsJsonPrimitive("message").asString)
-                    Log.d("status", it.getAsJsonPrimitive("status").asString)
-
+                    Log.d("status", it.getAsJsonPrimitive("status").asString)*/
                 .subscribe({
                     Log.d("content", it.toString())
                     Toast.makeText(applicationContext, "$it", Toast.LENGTH_LONG).show()
@@ -75,29 +74,17 @@ class MainActivity : AppCompatActivity() {
         }
         var num = 0
 
-
         download.setOnClickListener {
             RetrofitService().callbackgetimage(this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                },{
+                }, {
                 })
-        }
-    }
-
-    fun checkPermission() {
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                1
-            )
-
-        plusclick.setOnClickListener {
             num += 1
             Toast.makeText(applicationContext, "$num", Toast.LENGTH_SHORT).show()
         }
+
         chageImg.setOnClickListener {
             lateinit var bitmap: Bitmap
 
@@ -178,5 +165,15 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+    fun checkPermission() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                1
+            )
+        }
+    }
 
 }
+

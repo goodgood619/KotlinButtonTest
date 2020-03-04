@@ -12,7 +12,7 @@ import retrofit2.http.*
 interface apiService {
     @Multipart
     @POST("/users")
-    fun testcall(@Query("name") name: String?, @Query("part") part: String?, @Part image: MultipartBody.Part?): Call<ResponseBody?>?
+    fun testcall(@Query("name") name: String?, @Query("part") part: String?, @Part image: MultipartBody.Part?): Call<ResponseBody>
 
     @POST("/users")
     fun test(): Call<ResponseBody?>?
@@ -22,4 +22,8 @@ interface apiService {
 
     @GET("/users")
     fun getTotalUser(): Observable<JsonObject>
+
+    @GET
+    @Streaming
+    fun getImageDetails(@Url url : String) : Call<ResponseBody>
 }

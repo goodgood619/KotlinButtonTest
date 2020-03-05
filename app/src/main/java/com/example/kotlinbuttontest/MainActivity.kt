@@ -9,39 +9,32 @@ import android.graphics.BitmapFactory
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.core.app.ActivityCompat
 import com.example.kotlin_test.R
 
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget
-
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
-import okhttp3.OkHttpClient
-import retrofit2.http.Url
 import java.io.BufferedInputStream
 import java.net.HttpURLConnection
-import java.net.URI
 import java.net.URL
 
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         checkPermission()
         btn_kotlin.setOnClickListener {
-            var ret = RetrofitService().callbackpost(et_kotlin.text.toString())
-
+            RetrofitService().callBackPost(et_kotlin.text.toString())
         }
+
         btn_kotlin2.setOnClickListener {
-            val retrofitService = RetrofitService().callbackget(et_kotlin.text.toString())
+            val retrofitService = RetrofitService().callBackGet(et_kotlin.text.toString())
             retrofitService.getTotalUser()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -56,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                 .subscribe({
                     Log.d("content", it.toString())
                     Toast.makeText(applicationContext, "$it", Toast.LENGTH_LONG).show()
-                    val t = it.getAsJsonPrimitive("message").asString
+                    it.getAsJsonPrimitive("message").asString
                     val test = it.getAsJsonArray("data").get(0).asJsonObject.get("name").asString
                     retrofitService.getUser(test)
                         .subscribeOn(Schedulers.io())
@@ -75,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         var num = 0
 
         download.setOnClickListener {
-            RetrofitService().callbackgetimage(this)
+            RetrofitService().callBackGetImage(this)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

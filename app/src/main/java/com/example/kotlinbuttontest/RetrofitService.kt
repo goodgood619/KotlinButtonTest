@@ -125,7 +125,7 @@ class RetrofitService {
             var output: FileOutputStream? = null
             val futureStudioIconFile = File(
                 context.getExternalFilesDir(null)?.absolutePath + File.separator
-                        + "testdownload4.png"
+                        + "testdownload5.png"
             )
             try {
                 if (response != null) {
@@ -161,13 +161,13 @@ class RetrofitService {
                 }
             }
             Log.d("after downloaded?", "test")
-            Log.d("경로: ",context.getExternalFilesDir(null)?.absolutePath+File.separator+"testdownload4.png")
-            if(File(context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload4.png").exists()) {
+            Log.d("경로: ",context.getExternalFilesDir(null)?.absolutePath+File.separator+"testdownload5.png")
+            if(File(context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload5.png").exists()) {
                 Log.d("true","true")
-                scanFile(context,context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload4.png")
+                scanFile(context,context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload5.png")
             }
             else Log.d("false","false")
-            return context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload4.png"
+            return context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload5.png"
         } catch (e: IOException) {
             Log.d("DownloadImage", e.toString())
             return ""

@@ -1,12 +1,13 @@
 package com.example.kotlinbuttontest
 
+
 import android.content.Context
 import android.media.MediaScannerConnection
-import android.util.Log
 import android.widget.Toast
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import android.util.Log
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -15,37 +16,27 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-
-
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
-import java.util.*
-
 
 // 데이터송수신을 받은다음, 간략하게 데이터 재가공 후 리턴
 class RetrofitService {
-
-    fun callbackpost(res: String) {
-        var retrofit = Retrofit.Builder()
-            .baseUrl("http://ec2-13-125-39-193.ap-northeast-2.compute.amazonaws.com:8080")
+    fun callBackPost(res: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("http://ec2-13-209-73-204.ap-northeast-2.compute.amazonaws.com:8080")
             .addConverterFactory(GsonConverterFactory.create())
-            .build();
-//        val file = File(Context.getFiles"C:\\Users\\Jay\\Desktop\\테스트\\2.jpg")
-        val file = File("/storage/emulated/0/Download/POL_apple.jpg")
-        var fbody = RequestBody.create(MediaType.parse("multipart/form-data"),file)
-        var multibody = MultipartBody.Part.createFormData("profile",file.name,fbody)
+            .build()
+        val file = File("/storage/emulated/0/Download/i14566164523.gif")
+        val fbody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+        val multibody = MultipartBody.Part.createFormData("profile", file.name, fbody)
         val server = retrofit.create(apiService::class.java)
-        val random = Random()
-        val num = random.nextInt(24)
-        var ass = "";
-        var cnt = 0;
-        var hi = res
-        val testcall = server.testcall("$hi","test",multibody)
-        cnt = cnt + 1
+        val hi = res
+        var ass = ""
+        val testcall = server.testcall("$hi", "test", multibody)
         var ret = ""
         testcall.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -62,63 +53,55 @@ class RetrofitService {
         })
     }
 
-    fun callbackget(res: String): apiService {
+    fun callBackGet(res: String): apiService {
         var retrofit = Retrofit.Builder()
+            .baseUrl("http://ec2-13-209-73-204.ap-northeast-2.compute.amazonaws.com:8080")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("http://10.0.2.2:8080/")
-            .build().create(apiService::class.java)
-        return retrofit;
+            .build()
+            .create(apiService::class.java)
+        return retrofit
     }
 
-    fun callbackgetimage(context: Context) :Observable<String>{
+    fun callBackGetImage(context: Context): Observable<String> {
         val imageretrofit = Retrofit.Builder()
+            .baseUrl("https://postfiles.pstatic.net/")
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .baseUrl("https://s3.ap-northeast-2.amazonaws.com/examplebuckets3good/")
-            .build().create(apiService::class.java)
+            .build()
+            .create(apiService::class.java)
+        var call = imageretrofit.getImageDetails("MjAyMDAzMDJfNjEg/MDAxNTgzMTEwOTA2Mjg4.w6xBoCd_pl6f0nLqIuwD4f-2LW7L4f" +
+                "ZVbLlOTsGZ6tUg.mwITBI6MBGXmfIeFLaX9FVwWEcNHXB82oQUh8xv5ZqIg.JPEG.jjujub8870/0034ef1057db2ed6a86312649a8cbc61.jpg")
 
-        var call = imageretrofit.getImageDetails("036f7102640a41749af35e58aaceff7d.PNG")
         return Observable.create {
             call.enqueue(object : Callback<ResponseBody?> {
                 override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-                    val t= Observable.fromCallable {
+                    val t = Observable.fromCallable {
                         if (response.isSuccessful) {
-                            Downloadimage(response.body(),context)
-                        }
-                        else {
+                            Downloadimage(response.body(), context)
+                        } else {
                             Log.e("AWS", "AWS error")
                         }
                     }
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            Log.d("파일다운로드","ok")
-                            Toast.makeText(context,"파일 다운로드 완료",Toast.LENGTH_LONG).show()
-                        },{
-                            Log.e("파일다운로드","error")
-                            Toast.makeText(context,"파일 다운로드 실패",Toast.LENGTH_LONG).show()
+                            Log.d("파일다운로드", "ok")
+                            Toast.makeText(context, "파일 다운로드 완료", Toast.LENGTH_LONG).show()
+                        }, {
+                            Log.e("파일다운로드", "error")
+                            Toast.makeText(context, "파일 다운로드 실패", Toast.LENGTH_LONG).show()
                         })
 
                 }
-
                 override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                     Log.e("TAG", "error")
                 }
             })
         }
-//        call.subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe {
-//                Log.d("msg", it.string())
-//                Downloadimage(it)
-//                Log.d("image download", "ok")
-//            }(
-//            Log.d("error","errorerror")
-//        )
-
     }
-    fun Downloadimage(response: ResponseBody?,context: Context): String {
+
+    fun Downloadimage(response: ResponseBody?, context: Context): String {
         return try {
             Log.d("DownloadImage", "Reading and writing file")
             var input: InputStream? = null
@@ -135,7 +118,6 @@ class RetrofitService {
                 val fileSize: Long = response!!.contentLength()
                 var fileSizeDownloaded: Long = 0
                 output = FileOutputStream(futureStudioIconFile)
-                var c: Int = 0
                 if (input != null) {
                     while (true) {
                         val read: Int = input.read(fileReader)
@@ -144,9 +126,8 @@ class RetrofitService {
                         }
                         output.write(fileReader, 0, read)
                         fileSizeDownloaded += read
-                        Log.d("file download: " + fileSizeDownloaded.toString() + " of " + fileSize,"loading")
+                        Log.d("file download: " + fileSizeDownloaded.toString() + " of " + fileSize, "loading")
                     }
-//                    bitmap = BitmapFactory.decodeStream(input)
                     Log.d("downloaded ", "ok download")
                 }
             } catch (e: IOException) {
@@ -161,32 +142,28 @@ class RetrofitService {
                 }
             }
             Log.d("after downloaded?", "test")
-            Log.d("경로: ",context.getExternalFilesDir(null)?.absolutePath+File.separator+"testdownload5.png")
-            if(File(context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload5.png").exists()) {
-                Log.d("true","true")
-                scanFile(context,context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload5.png")
-            }
-            else Log.d("false","false")
-            return context.getExternalFilesDir(null)?.absolutePath + File.separator+ "testdownload5.png"
+
+            Log.d("경로: ", context.getExternalFilesDir(null)?.absolutePath + File.separator + "testdownload4.png")
+
+            if (File(context.getExternalFilesDir(null)?.absolutePath + File.separator + "testdownload4.png").exists()) {
+                Log.d("true", "true")
+                scanFile(
+                    context,
+                    context.getExternalFilesDir(null)?.absolutePath + File.separator + "testdownload4.png"
+                )
+            } else Log.d("false", "false")
+
+            return context.getExternalFilesDir(null)?.absolutePath + File.separator + "testdownload4.png"
         } catch (e: IOException) {
             Log.d("DownloadImage", e.toString())
             return ""
         }
     }
-    private fun scanFile(context: Context,path: String) {
+
+    private fun scanFile(context: Context, path: String) {
         MediaScannerConnection.scanFile(
             context, arrayOf(path), null
         )
         { path, uri -> Log.d("Tag", "Scan finished. You can view the image in the gallery now.") }
     }
 }
-//                val width: Int
-//                val height: Int
-//                val image: ImageView = findViewById<View>(android.R.id.imageViewId) as ImageView
-//                val bMap =
-//                    BitmapFactory.decodeFile(Environment.getExternalStorageDirectory().toString() + File.separator + "A.jpg")
-//                width = 2 * bMap.width
-//                height = 6 * bMap.height
-//                val bMap2 = Bitmap.createScaledBitmap(bMap, width, height, false)
-//                image.setImageBitmap(bMap2)
-

@@ -16,10 +16,12 @@
             android:theme="@style/AppTheme"
             android:usesCleartextTraffic="true"
             android:requestLegacyExternalStorage="true">
+        <activity android:name="com.example.kotlinbuttontest.ViewActivity"/>
         <activity android:name="com.example.kotlinbuttontest.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
+
+        <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

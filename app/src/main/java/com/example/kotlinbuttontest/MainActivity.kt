@@ -2,6 +2,8 @@ package com.example.kotlinbuttontest
 
 
 import android.Manifest
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,10 +12,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.core.app.ActivityCompat
 import com.example.kotlin_test.R
+import com.google.android.material.snackbar.Snackbar
 
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -24,18 +28,29 @@ import java.net.URL
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-
+    var num = 0
+    var backWait : Long = 0
     override fun onClick(v: View){
         when (v.id)
         {
             R.id.btn_kotlin -> { ClickSendPost() }
             R.id.btn_kotlin2 -> { ClickSendGet() }
             R.id.download -> { ClickDownload() }
-            R.id.chageImg -> { ClickchangeImg()}
+            R.id.chageImg -> { ClickChangeImg() }
+            R.id.show -> { ClickShow() }
         }
     }
 
-    var num = 0
+    override fun onBackPressed() {
+        if(System.currentTimeMillis() - backWait >= 2000){
+            backWait = System.currentTimeMillis()
+        }
+        else {
+            //클래스화 해보기
+            askFinish()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,16 +58,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         checkPermission()
 
-
         btn_kotlin.setOnClickListener(this)
         btn_kotlin2.setOnClickListener(this)
         download.setOnClickListener(this)
         chageImg.setOnClickListener(this)
+        show.setOnClickListener(this)
     }
-
-
-
-
 
 
     fun checkPermission() {
@@ -64,6 +75,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             )
         }
     }
+
     fun ClickSendPost(){
         RetrofitService().callBackPost(et_kotlin.text.toString())
     }
@@ -109,10 +121,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         num += 1
         Toast.makeText(applicationContext, "$num", Toast.LENGTH_SHORT).show()
     }
-    private fun ClickchangeImg() {
+    private fun ClickChangeImg() {
         lateinit var bitmap: Bitmap
-
-
         if (num % 4 == 3)
         {
 
@@ -193,6 +203,37 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             imageView.setImageBitmap(bitmap)
         }
+    }
+    private fun ClickShow() {
+        val intent = Intent(this, ViewActivity::class.java)
+        startActivity(intent)
+    }
+    private fun askFinish() {
+        var show = AlertDialog.Builder(this)
+        show.setTitle("종료창")
+        show.setMessage("종료하시겠습니까?")
+        show.setIcon(R.drawable.g)
+        fun toast_p() {
+            Toast.makeText(this, "예를 눌렀습니다", Toast.LENGTH_LONG).show()
+            finish()
+        }
+
+        fun toast_n() {
+            Toast.makeText(this, "아니오를 눌렀습니다", Toast.LENGTH_LONG).show()
+        }
+
+        var dialog_listner = object : DialogInterface.OnClickListener {
+            override fun onClick(dialog: DialogInterface?, which: Int) {
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> toast_p()
+                    DialogInterface.BUTTON_NEGATIVE -> toast_n()
+                }
+            }
+        }
+
+        show.setPositiveButton("Yes", dialog_listner)
+        show.setNegativeButton("No", dialog_listner)
+        show.show()
     }
 }
 

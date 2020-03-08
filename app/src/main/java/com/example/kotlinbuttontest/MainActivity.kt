@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         RetrofitService().callBackPost(et_kotlin.text.toString())
     }
     fun ClickSendGet(){
-
         val retrofitService = RetrofitService().callBackGet(et_kotlin.text.toString())
         retrofitService.getTotalUser()
             .subscribeOn(Schedulers.io())
@@ -97,9 +96,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             {
                 Log.e("Error", it.message)
             }
-
     }
     private fun ClickDownload() {
+
         RetrofitService().callBackGetImage(this)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

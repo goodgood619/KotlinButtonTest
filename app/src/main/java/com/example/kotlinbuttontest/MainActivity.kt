@@ -2,7 +2,6 @@ package com.example.kotlinbuttontest
 
 
 import android.Manifest
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,7 +11,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
 import androidx.core.app.ActivityCompat
@@ -27,21 +25,19 @@ import java.net.URL
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
-    var num = 0
+    private var num = 0
 
-    override fun onClick(v: View){
-        when (v.id)
-        {
-            R.id.btn_kotlin -> { ClickSendPost() }
-            R.id.btn_kotlin2 -> { ClickSendGet() }
-            R.id.download -> { ClickDownload() }
-            R.id.chageImg -> { ClickChangeImg() }
-            R.id.show -> { ClickShow() }
+    override fun onClick(v: View) {
+        when (v.id) {
+            R.id.btn_kotlin -> ClickSendPost()
+            R.id.btn_kotlin2 -> ClickSendGet()
+            R.id.download -> ClickDownload()
+            R.id.chageImg -> ClickChangeImg()
+            R.id.show -> clickShow()
         }
     }
 
     override fun onBackPressed() {
-
         BackEvent().askMainFinish(this)
     }
 
@@ -60,7 +56,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
 
-    fun checkPermission() {
+    private fun checkPermission() {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
@@ -70,10 +66,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun ClickSendPost(){
+    private fun ClickSendPost() {
         RetrofitService().callBackPost(et_kotlin.text.toString())
     }
-    fun ClickSendGet(){
+
+    fun ClickSendGet() {
 
         val retrofitService = RetrofitService().callBackGet(et_kotlin.text.toString())
         retrofitService.getTotalUser()
@@ -105,6 +102,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
 
     }
+
     private fun ClickDownload() {
         RetrofitService().callBackGetImage(this)
             .subscribeOn(Schedulers.io())
@@ -115,10 +113,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         num += 1
         Toast.makeText(applicationContext, "$num", Toast.LENGTH_SHORT).show()
     }
+
     private fun ClickChangeImg() {
         lateinit var bitmap: Bitmap
-        if (num % 4 == 3)
-        {
+        if (num % 4 == 3) {
 
             val mThread = Thread() {
                 val url = URL(
@@ -134,8 +132,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             mThread.start()
             mThread.join()
             imageView.setImageBitmap(bitmap)
-        } else if (num % 4 == 2)
-        {
+        } else if (num % 4 == 2) {
             lateinit var bitmap: Bitmap
             val mThread = Thread() {
                 val url = URL(
@@ -152,8 +149,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             mThread.start()
             mThread.join()
             imageView.setImageBitmap(bitmap)
-        } else if (num % 4 == 1)
-        {
+        } else if (num % 4 == 1) {
             //            val imgView : ImageView = findViewById(R.id.imageView)
 //findViewById(R.id.imageView)
             lateinit var bitmap: Bitmap
@@ -175,8 +171,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             imageView.setImageBitmap(bitmap)
         }
         //imageView.setImageBitmap(imgBitmap)
-        else
-        {
+        else {
             lateinit var bitmap: Bitmap
             // 스레드
             val mThread = Thread() {
@@ -198,7 +193,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             imageView.setImageBitmap(bitmap)
         }
     }
-    private fun ClickShow() {
+
+    private fun clickShow() {
         val intent = Intent(this, ViewActivity::class.java)
         startActivity(intent)
     }

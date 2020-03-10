@@ -10,6 +10,7 @@ import com.example.kotlin_test.R
 
 
 class BackEvent : AppCompatActivity() {
+
     fun askMainFinish(context: Activity) {
         val show = AlertDialog.Builder(context)
         show.setTitle("종료창")
@@ -17,7 +18,7 @@ class BackEvent : AppCompatActivity() {
         show.setIcon(R.drawable.g)
         fun toastp() {
             Toast.makeText(context, "예를 눌렀습니다", Toast.LENGTH_LONG).show()
-            context.finish()
+            context.finishAffinity()
         }
 
         fun toastn() {
@@ -37,4 +38,5 @@ class BackEvent : AppCompatActivity() {
         show.setNegativeButton("No", dialogListner)
         show.show()
     }
+
 }
